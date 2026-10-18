@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EstoquePro — Gestão de Estoque</title>
+<meta name="description" content="Gestão de estoque: produtos, movimentações, inventário, curva ABC e previsão de reposição.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<link rel="stylesheet" href="style.css">
+<body>
+
+<!-- ===================== LANDING ===================== -->
+<div id="landingView">
+<nav class="navbar">
+  <div class="container nav-content">
+    <div class="logo">
+      <svg class="tag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 21 6v6c0 5-4 8-9 10-5-2-9-5-9-10V6l9-4Z"/><path d="M8 12h8M8 9h5"/></svg>
+      EstoquePro
+    </div>
+    <div class="nav-links">
+      <a class="nav-item nav-anchor" href="#beneficios">Benefícios</a>
+      <a class="nav-item nav-anchor" href="#funciona">Como Funciona</a>
+      <a class="nav-item nav-anchor" href="#faq">FAQ</a>
+      <button type="button" class="nav-item" onclick="openAuth('login')">Entrar</button>
+      <button type="button" class="theme-btn" id="themeToggle" aria-label="Alternar tema">🌙</button>
+      <button type="button" class="stamp-btn" onclick="openAuth('signup')">Teste Grátis</button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">Gestão de estoque</span>
+      <h1>Seu estoque organizado, <span>produto por produto.</span></h1>
+      <p class="lead">Cadastro completo, movimentações, inventário, estatísticas e previsão de reposição — tudo em um só lugar, com controle de acesso por equipe.</p>
+      <div class="buttons">
+        <button type="button" class="stamp-btn" onclick="openAuth('signup')">Começar Agora</button>
+        <a class="btn-outline" href="#funciona">Como funciona</a>
+      </div>
+    </div>
+    <div class="ticket reveal">
+      <div class="ticket-head"><div><span class="eyebrow">Ficha de estoque</span><h3>Painel de exemplo</h3></div><span class="live-dot">Demo</span></div>
+      <div class="ticket-row"><span class="label">Produtos cadastrados</span><span class="value mono">1.245</span></div>
+      <div class="ticket-row"><span class="label">Crescimento no mês</span><span class="value mono up">+18%</span></div>
+      <div class="ticket-row"><span class="label">Alertas de reposição</span><span class="value mono warn">12</span></div>
+      <div class="ticket-row"><span class="label">Valor total em estoque</span><span class="value mono">R$ 48.200</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="barcode"></div>
+
+<section id="beneficios">
+  <div class="container">
+    <div class="section-title reveal"><span class="eyebrow">Benefícios</span><h2>Feito para quem cuida do estoque de verdade</h2><p>Do cadastro à previsão de compra, cada função resolve um problema de quem movimenta produto todo dia.</p></div>
+    <div class="cards">
+      <div class="card reveal"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7"/></svg><h3>Saldo sempre atual</h3><p>Toda entrada e saída atualiza o saldo na hora, com histórico completo e estorno rastreável.</p></div>
+      <div class="card reveal"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3 3 19h18L12 3Z"/><path d="M12 10v4"/></svg><h3>Alertas automáticos</h3><p>Estoque baixo, validade próxima e produtos parados sinalizados no painel.</p></div>
+      <div class="card reveal"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><h3>Curva ABC e previsão</h3><p>Produtos mais e menos vendidos, classificação ABC e sugestão de compra.</p></div>
+      <div class="card reveal"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><h3>Controle de acesso</h3><p>Administrador, funcionário e visualizador: cada um faz só o que o perfil permite.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="funciona">
+  <div class="container">
+    <div class="section-title reveal"><span class="eyebrow">Como funciona</span><h2>Do cadastro ao relatório, em três etapas</h2></div>
+    <div class="steps">
+      <div class="step reveal"><span class="number">01</span><h3>Cadastre cada produto</h3><p>SKU, código de barras, categoria, fornecedor, validade, mínimo e máximo.</p></div>
+      <div class="step reveal"><span class="number">02</span><h3>Registre a movimentação</h3><p>Entradas, saídas e ajustes de inventário, com motivo e filtros por período.</p></div>
+      <div class="step reveal"><span class="number">03</span><h3>Acompanhe e preveja</h3><p>Painel, estatísticas e sugestão de reposição baseada no seu consumo.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="barcode"></div>
+
+<section class="showcase">
+  <div class="container">
+    <div class="section-title reveal"><span class="eyebrow">Painel</span><h2>O painel que sua planilha nunca teve</h2><p>Entradas, saídas e evolução de estoque, atualizados a cada lançamento.</p></div>
+    <div class="panel-frame reveal"><div class="panel-frame-head"><span>exemplo ilustrativo — dados fictícios</span></div><canvas id="stockChart2" height="90"></canvas></div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="metrics reveal">
+      <div class="metric"><h3 class="mono">3</h3><p>Perfis de acesso</p></div>
+      <div class="metric"><h3 class="mono">3</h3><p>Formatos de exportação</p></div>
+      <div class="metric"><h3 class="mono">6</h3><p>Meses de histórico no painel</p></div>
+      <div class="metric"><h3 class="mono">0</h3><p>Instalações necessárias</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="container">
+    <div class="section-title reveal"><span class="eyebrow">Dúvidas</span><h2>Perguntas frequentes</h2></div>
+    <details class="reveal"><summary>Precisa instalar algo?</summary><p>Não. O EstoquePro roda direto do navegador.</p></details>
+    <details class="reveal"><summary>Funciona no celular?</summary><p>Sim, o painel se adapta a telas pequenas.</p></details>
+    <details class="reveal"><summary>Posso ter mais de um usuário?</summary><p>Sim. O administrador cadastra funcionários e visualizadores na mesma empresa.</p></details>
+    <details class="reveal"><summary>Consigo exportar relatórios?</summary><p>Sim, em CSV, Excel e PDF, direto das telas de produtos e movimentações.</p></details>
+    <details class="reveal"><summary>Onde ficam meus dados?</summary><p>Nesta versão, no armazenamento do próprio navegador. Faça exportações periódicas como backup.</p></details>
+  </div>
+</section>
+
+<section class="cta" id="cta">
+  <div class="container cta-inner">
+    <div class="reveal"><span class="eyebrow">Comece hoje</span><h2>Organize seu estoque sem planilha</h2><p>Cadastro grátis, sem cartão de crédito.</p></div>
+    <button type="button" class="stamp-btn" style="font-size:.92rem; padding:16px 28px;" onclick="openAuth('signup')">Criar Conta Gratuita</button>
+  </div>
+</section>
+
+<div class="barcode"></div>
+
+<footer>
+  <div class="container footer-inner">
+    <p>© 2026 EstoquePro — Sistema de gestão de estoque.</p>
+    <div class="footer-links"><a href="#beneficios">Benefícios</a><a href="#funciona">Como Funciona</a><a href="#faq">FAQ</a></div>
+  </div>
+</footer>
+</div>
+
+<!-- ===================== AUTENTICAÇÃO ===================== -->
+<div id="authView" class="hidden">
+  <div class="auth-screen">
+    <div class="auth-card">
+      <button type="button" class="link-back" onclick="showView('landing')">← Voltar</button>
+
+      <div id="loginForm">
+        <h2>Entrar</h2><p class="sub">Acesse sua conta do EstoquePro.</p>
+        <div id="loginMsg"></div>
+        <div class="form-group"><label for="loginEmail">E-mail</label><input type="email" id="loginEmail" autocomplete="username"></div>
+        <div class="form-group"><label for="loginPassword">Senha</label><input type="password" id="loginPassword" autocomplete="current-password" onkeydown="if(event.key==='Enter') handleLogin()"></div>
+        <button type="button" class="stamp-btn btn-block" onclick="handleLogin()">Entrar</button>
+        <p class="auth-switch">Ainda não tem conta? <button type="button" onclick="openAuth('signup')">Criar conta</button></p>
+      </div>
+
+      <div id="signupForm" class="hidden">
+        <h2>Criar conta</h2><p class="sub">Você será o administrador da empresa.</p>
+        <div id="signupMsg"></div>
+        <div class="form-group"><label for="signupName">Seu nome</label><input type="text" id="signupName" autocomplete="name"></div>
+        <div class="form-group"><label for="signupCompany">Nome da empresa</label><input type="text" id="signupCompany" placeholder="Ex: Distribuidora Silva"></div>
+        <div class="form-group"><label for="signupEmail">E-mail</label><input type="email" id="signupEmail" autocomplete="username"></div>
+        <div class="form-group"><label for="signupPassword">Senha</label><input type="password" id="signupPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password" onkeydown="if(event.key==='Enter') handleSignup()"></div>
+        <button type="button" class="stamp-btn btn-block" onclick="handleSignup()">Criar conta grátis</button>
+        <p class="auth-switch">Já tem conta? <button type="button" onclick="openAuth('login')">Entrar</button></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APLICAÇÃO ===================== -->
+<div id="appView" class="hidden">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="logo"><svg class="tag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 21 6v6c0 5-4 8-9 10-5-2-9-5-9-10V6l9-4Z"/><path d="M8 12h8M8 9h5"/></svg>EstoquePro</div>
+      <div class="side-company" id="sideCompany">EMPRESA</div>
+      <nav class="side-nav" aria-label="Seções">
+        <button type="button" class="nav-btn active" data-section="dashboard" onclick="switchSection('dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</button>
+        <button type="button" class="nav-btn" data-section="produtos" onclick="switchSection('produtos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 7v10l9 4 9-4V7"/></svg>Produtos</button>
+        <button type="button" class="nav-btn" data-section="movimentacoes" onclick="switchSection('movimentacoes')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg>Movimentações</button>
+        <button type="button" class="nav-btn" data-section="inventario" onclick="switchSection('inventario')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5h6M9 3h6v4H9V3ZM6 7h12v14H6V7Z"/></svg>Inventário</button>
+        <button type="button" class="nav-btn" data-section="estatisticas" onclick="switchSection('estatisticas')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Estatísticas & ABC</button>
+        <button type="button" class="nav-btn" id="navUsuarios" data-section="usuarios" onclick="switchSection('usuarios')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><path d="M2 20c0-3.3 3-6 7-6s7 2.7 7 6"/><circle cx="18" cy="8" r="2.4"/><path d="M16.5 14.2c2.6.5 4.5 2.6 4.5 5.8"/></svg>Usuários</button>
+      </nav>
+      <div class="side-footer">
+        <div class="side-hint">Atalhos: Alt+N novo produto · / ou Ctrl+K buscar</div>
+        <button type="button" class="btn-outline btn-sm btn-block" onclick="handleLogout()">Sair</button>
+      </div>
+    </aside>
+
+    <div class="app-content">
+      <div class="topbar">
+        <div class="topbar-search"><input id="globalSearch" type="search" placeholder="Buscar produto por nome, SKU ou código..." aria-label="Buscar produto" onkeydown="if(event.key==='Enter') globalSearchGo()"></div>
+        <div class="topbar-actions">
+          <div class="bell-wrap">
+            <button type="button" class="bell-btn" onclick="toggleBell(event)" aria-label="Alertas">🔔<span class="bell-dot" id="bellDot">0</span></button>
+            <div class="bell-dropdown" id="bellDropdown"></div>
+          </div>
+          <button type="button" class="theme-btn" id="themeToggleApp" aria-label="Alternar tema">🌙</button>
+          <span class="user-chip" id="userChip"></span>
+        </div>
+      </div>
+
+      <div class="app-content-inner">
+
+        <section class="app-section active" id="section-dashboard">
+          <div class="dash-grid">
+            <div class="dash-card"><div class="dash-label">Produtos ativos</div><div class="dash-value" id="statProdutos">0</div></div>
+            <div class="dash-card"><div class="dash-label">Valor total em estoque</div><div class="dash-value" id="statValor">R$ 0,00</div></div>
+            <div class="dash-card"><div class="dash-label">Estoque baixo</div><div class="dash-value warn" id="statAlertas">0</div></div>
+            <div class="dash-card"><div class="dash-label">Movimentações no mês</div><div class="dash-value" id="statMovMes">0</div></div>
+            <div class="dash-card"><div class="dash-label">Vencendo em 30 dias</div><div class="dash-value warn" id="statVencendo">0</div></div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="panel-frame"><div class="panel-frame-head"><span>entradas x saídas — 6 meses</span></div><canvas id="inOutChart" height="110"></canvas></div>
+            <div class="panel-frame"><div class="panel-frame-head"><span>evolução do estoque (unidades)</span></div><canvas id="evoChart" height="110"></canvas></div>
+          </div>
+
+          <h3 style="font-size:1.02rem; margin-bottom:12px;">Alertas de reposição</h3>
+          <div class="low-stock-list" id="lowStockList" style="margin-bottom:26px;"></div>
+
+          <h3 style="font-size:1.02rem; margin-bottom:12px;">Vencimento próximo</h3>
+          <div class="low-stock-list" id="expiringList"></div>
+        </section>
+
+        <section class="app-section" id="section-produtos">
+          <div class="row-flex">
+            <h3 style="font-size:1.2rem;">Produtos</h3>
+            <div class="export-group">
+              <button type="button" class="btn-outline btn-sm" onclick="toggleDenseTable()">Modo denso</button>
+              <button type="button" class="btn-outline btn-sm" onclick="exportCSV('products')">CSV</button>
+              <button type="button" class="btn-outline btn-sm" onclick="exportXLSX('products')">Excel</button>
+              <button type="button" class="btn-outline btn-sm" onclick="exportPDF('products')">PDF</button>
+              <button type="button" class="stamp-btn btn-sm" id="btnNovoProduto" onclick="openProductModal()">+ Novo Produto</button>
+            </div>
+          </div>
+          <div class="filters-bar">
+            <input id="pf_search_name" placeholder="Nome, SKU ou código" aria-label="Filtrar por nome, SKU ou código" oninput="renderProductsTable()">
+            <select id="pf_search_cat" aria-label="Categoria" onchange="renderProductsTable()"><option value="">Todas categorias</option></select>
+            <select id="pf_search_brand" aria-label="Marca" onchange="renderProductsTable()"><option value="">Todas marcas</option></select>
+            <select id="pf_search_status" aria-label="Situação" onchange="renderProductsTable()">
+              <option value="ativos">Somente ativos</option><option value="inativos">Somente inativos</option><option value="todos">Todos</option>
+            </select>
+          </div>
+          <div id="productsTableWrap"></div>
+        </section>
+
+        <section class="app-section" id="section-movimentacoes">
+          <div class="row-flex">
+            <h3 style="font-size:1.2rem;">Movimentações</h3>
+            <div class="export-group">
+              <button type="button" class="btn-outline btn-sm" onclick="exportCSV('movements')">CSV</button>
+              <button type="button" class="btn-outline btn-sm" onclick="exportXLSX('movements')">Excel</button>
+              <button type="button" class="btn-outline btn-sm" onclick="exportPDF('movements')">PDF</button>
+              <button type="button" class="stamp-btn btn-sm" id="btnNovaMov" onclick="openMovementModal()">+ Nova Movimentação</button>
+            </div>
+          </div>
+          <div class="filters-bar">
+            <select id="mf_search_type" aria-label="Tipo" onchange="renderMovementsTable()">
+              <option value="">Todos os tipos</option><option value="entrada">Entrada</option><option value="saida">Saída</option><option value="ajuste">Ajuste</option><option value="estorno">Estorno</option>
+            </select>
+            <input type="date" id="mf_search_from" aria-label="De" onchange="renderMovementsTable()">
+            <input type="date" id="mf_search_to" aria-label="Até" onchange="renderMovementsTable()">
+            <input id="mf_search_text" placeholder="Produto..." aria-label="Filtrar por produto" oninput="renderMovementsTable()">
+          </div>
+          <div id="movementsTableWrap"></div>
+        </section>
+
+        <section class="app-section" id="section-inventario">
+          <div class="row-flex">
+            <h3 style="font-size:1.2rem;">Conferência de Inventário</h3>
+            <button type="button" class="stamp-btn btn-sm" id="btnAplicarInv" onclick="applyInventoryCount()">Aplicar Ajustes</button>
+          </div>
+          <p class="note">Informe a contagem física de cada produto. Deixe em branco o que não foi contado. As diferenças viram movimentações de ajuste.</p>
+          <div id="inventoryTableWrap"></div>
+        </section>
+
+        <section class="app-section" id="section-estatisticas">
+          <h3 style="font-size:1.2rem; margin-bottom:18px;">Estatísticas</h3>
+          <div class="tab-row">
+            <button type="button" class="active" data-tab="vendidos" onclick="switchStatTab('vendidos')">Mais / Menos Vendidos</button>
+            <button type="button" data-tab="categorias" onclick="switchStatTab('categorias')">Categorias</button>
+            <button type="button" data-tab="abc" onclick="switchStatTab('abc')">Curva ABC</button>
+            <button type="button" data-tab="previsao" onclick="switchStatTab('previsao')">Previsão de Reposição</button>
+            <button type="button" data-tab="parados" onclick="switchStatTab('parados')">Produtos Parados</button>
+          </div>
+          <div id="statTab-vendidos" class="stat-tab">
+            <div class="charts-grid" style="grid-template-columns:1fr 1fr;">
+              <div class="panel-frame"><div class="panel-frame-head"><span>top 5 mais vendidos (90 dias)</span></div><canvas id="topSoldChart" height="130"></canvas></div>
+              <div class="panel-frame"><div class="panel-frame-head"><span>top 5 menos vendidos (90 dias)</span></div><canvas id="lowSoldChart" height="130"></canvas></div>
+            </div>
+          </div>
+          <div id="statTab-categorias" class="stat-tab hidden">
+            <div class="panel-frame" style="max-width:520px;"><div class="panel-frame-head"><span>valor em estoque por categoria</span></div><canvas id="catChart" height="180"></canvas></div>
+          </div>
+          <div id="statTab-abc" class="stat-tab hidden">
+            <p class="note" id="abcNote"></p>
+            <div id="abcTableWrap"></div>
+          </div>
+          <div id="statTab-previsao" class="stat-tab hidden"><p class="note">Consumo médio dos últimos 30 dias × prazo de entrega do produto. Sugestão de compra leva o saldo até o estoque máximo.</p><div id="previsaoList" class="stat-list"></div></div>
+          <div id="statTab-parados" class="stat-tab hidden"><p class="note">Produtos com saldo e sem saída há 60 dias ou mais.</p><div id="paradosList" class="stat-list"></div></div>
+        </section>
+
+        <section class="app-section" id="section-usuarios">
+          <div class="row-flex">
+            <h3 style="font-size:1.2rem;">Usuários da Empresa</h3>
+            <button type="button" class="stamp-btn btn-sm" onclick="openInviteModal()">+ Adicionar Membro</button>
+          </div>
+          <div id="usersTableWrap" style="margin-bottom:30px;"></div>
+          <h3 style="font-size:1.05rem; margin-bottom:12px;">Atividades recentes</h3>
+          <div id="auditTableWrap"></div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+<div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
